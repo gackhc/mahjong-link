@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마작 기록장 연결</title>
+    <script>
+        window.onload = function() {
+            // 1. 주소창에서 '?id=시트ID' 부분의 ID 값을 빼옵니다.
+            const urlParams = new URLSearchParams(window.location.search);
+            const sheetId = urlParams.get('id');
+
+            if (sheetId) {
+                // 2. 안드로이드 앱을 강제로 깨우는 마법의 주소(Intent) 조합
+                // 패키지명(ggack.mahjongsheet)과 스킴(mahjong)이 앱과 정확히 일치해야 합니다.
+                const intentUrl = "intent://sheet/d/" + sheetId + "#Intent;scheme=mahjong;package=ggack.mahjongsheet;end;";
+                
+                // 3. 실행!
+                window.location.href = intentUrl;
+            } else {
+                document.getElementById("message").innerText = "잘못된 링크입니다 (시트 ID 없음).";
+            }
+        };
+    </script>
+</head>
+<body style="text-align: center; padding-top: 50px; font-family: sans-serif;">
+    <h3 id="message">마작 기록장 앱으로 이동 중입니다...🚀</h3>
+    <p style="color: gray; font-size: 14px;">화면이 넘어가지 않으면 우측 하단(또는 상단) 메뉴에서<br><b>'다른 브라우저로 열기'</b>를 선택해 주세요.</p>
+</body>
+</html>
