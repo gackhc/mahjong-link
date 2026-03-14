@@ -60,7 +60,7 @@
     </style>
     <script>
         let intentUrl = "";
-        const installUrl = "https://drive.google.com/file/d/1E_8k1E3SgKhp1Zx4QI0KDCMxqj7uTzuo/view?usp=sharing";
+        const installUrl = "https://drive.google.com/file/d/1WhQQzbLs518zhffsHiw6AXqWpzGCEsAn/view?usp=sharing";
 
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -69,11 +69,7 @@
             if (sheetId) {
                 // 인텐트 주소만 미리 만들어 둡니다 (자동 실행 X)
                 intentUrl = "intent://sheet/d/" + sheetId + "#Intent;scheme=mahjong;package=ggack.mahjongsheet;end;";
-            } else {
-                document.getElementById("message").innerText = "알림";
-                document.getElementById("sub-message").innerText = "연결할 시트 정보가 없습니다.";
-                document.getElementById("btn-open").style.display = "none";
-            }
+            } 
         };
 
         // [버튼 클릭 시에만 실행]
