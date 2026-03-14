@@ -70,7 +70,8 @@
                 // 인텐트 주소만 미리 만들어 둡니다 (자동 실행 X)
                 intentUrl = "intent://sheet/d/" + sheetId + "#Intent;scheme=mahjong;package=ggack.mahjongsheet;end;";
             }  else {
-                document.getElementById("btn-open").style.display = "none";
+                document.getElementById("btn-open").style.d`isplay = "none";
+                document.getElementById("sub-message").style.d`isplay = "none";
             }
         };
 
@@ -100,11 +101,8 @@
         <button onclick="installApp()" class="btn btn-secondary">
             앱이 없으신가요? 설치하기
         </button>
-
+        <p id="sub-message2">로그인 시 민감한 정보 창에서 <br>좌하단 고급 -> 마작기록장 가기 항목을 선택하고<br>요구하는 모든 권한을 부여해주세요.</p>
         <p class="footer-note">
-            로그인 시 민감한 정보 창에서 좌하단 고급 -> 마작기록장 가기 항목을 선택하고<br>
-            요구하는 모든 권한을 부여해주세요
-            <br><br>
             인앱 브라우저(카톡 등)에서 연결이 안 될 경우<br>
             상단 메뉴의 <b>'브라우저로 열기'</b>를 눌러주세요.
         </p>
