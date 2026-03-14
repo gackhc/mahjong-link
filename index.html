@@ -4,27 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마작 기록장 연결</title>
+    <style>
+        body {
+            text-align: center;
+            padding: 50px 20px;
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h3 { margin-bottom: 10px; }
+        p { color: #666; font-size: 14px; line-height: 1.5; margin-bottom: 30px; }
+        
+        /* 버튼 스타일 */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 18px 0;
+            margin: 10px 0;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: transform 0.2s, opacity 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:active { transform: scale(0.98); }
+
+        /* 앱으로 이동 버튼 (초록색) */
+        .btn-primary {
+            background-color: #28a745;
+            color: white;
+        }
+        /* 설치 버튼 (회색/파란색) */
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .footer-note {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
     <script>
+        let intentUrl = "";
+        const installUrl = "https://drive.google.com/file/d/1E_8k1E3SgKhp1Zx4QI0KDCMxqj7uTzuo/view?usp=sharing";
+
         window.onload = function() {
-            // 1. 주소창에서 '?id=시트ID' 부분의 ID 값을 빼옵니다.
             const urlParams = new URLSearchParams(window.location.search);
             const sheetId = urlParams.get('id');
 
             if (sheetId) {
-                // 2. 안드로이드 앱을 강제로 깨우는 마법의 주소(Intent) 조합
-                // 패키지명(ggack.mahjongsheet)과 스킴(mahjong)이 앱과 정확히 일치해야 합니다.
-                const intentUrl = "intent://sheet/d/" + sheetId + "#Intent;scheme=mahjong;package=ggack.mahjongsheet;end;";
+                // 인텐트 주소 생성
+                intentUrl = "intent://sheet/d/" + sheetId + "#Intent;scheme=mahjong;package=ggack.mahjongsheet;end;";
                 
-                // 3. 실행!
-                window.location.href = intentUrl;
+                // 1. 페이지 로드 시 자동으로 앱 실행 시도
+                setTimeout(() => {
+                    window.location.href = intentUrl;
+                }, 500);
             } else {
-                document.getElementById("message").innerText = "잘못된 링크입니다 (시트 ID 없음).";
+                document.getElementById("message").innerText = "잘못된 접근입니다.";
+                document.getElementById("sub-message").innerText = "시트 ID를 찾을 수 없습니다.";
+                document.getElementById("btn-open").style.display = "none";
             }
         };
+
+        // 버튼 클릭 함수
+        function openApp() {
+            if (intentUrl) window.location.href = intentUrl;
+        }
+
+        function installApp() {
+            window.location.href = installUrl;
+        }
     </script>
 </head>
-<body style="text-align: center; padding-top: 50px; font-family: sans-serif;">
-    <h3 id="message">마작 기록장 앱으로 이동 중입니다...🚀</h3>
-    <p style="color: gray; font-size: 14px;">화면이 넘어가지 않으면 우측 하단(또는 상단) 메뉴에서<br><b>'다른 브라우저로 열기'</b>를 선택해 주세요.</p>
+<body>
+
+    <div class="container">
+        <h3 id="message">마작 기록장 🚀</h3>
+        <p id="sub-message">앱으로 이동하여 기록을 확인하세요.<br>자동으로 연결되지 않으면 아래 버튼을 눌러주세요.</p>
+
+        <button id="btn-open" onclick="openApp()" class="btn btn-primary">
+            마작 기록장 앱 열기
+        </button>
+
+        <button onclick="installApp()" class="btn btn-secondary">
+            앱이 없으면 설치하세요
+        </button>
+
+        <p class="footer-note">
+            카카오톡 등 인앱 브라우저에서 작동하지 않으면<br>
+            <b>'다른 브라우저로 열기'</b>를 선택해 주세요.
+        </p>
+    </div>
+
 </body>
 </html>
