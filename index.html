@@ -58,16 +58,56 @@
             color: #adb5bd;
         }
     </style>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getRemoteConfig, fetchAndActivate, getString } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-remote-config.js";
+
+        // 🚨 주의: Firebase 콘솔에서 '웹 앱'을 추가하고 아래 설정값을 복사해서 넣어주세요!
+        const firebaseConfig = {
+          apiKey: "AIzaSyBzuI8NJ03uRTy5OOF7QycZXcnqSAcUwwA",
+          authDomain: "mahjongs-e07d3.firebaseapp.com",
+          projectId: "mahjongs-e07d3",
+          storageBucket: "mahjongs-e07d3.firebasestorage.app",
+          messagingSenderId: "727926338004",
+          appId: "1:727926338004:web:d140565ae1e58ea2eea641",
+          measurementId: "G-Z2WZBEJS87"
+        };
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const remoteConfig = getRemoteConfig(app);
+        
+        // 웹에서는 캐시 시간을 짧게 하거나 기본값(12시간) 사용 (테스트 시엔 0으로 설정)
+        remoteConfig.settings.minimumFetchIntervalMillis = 0;
+
+        // 기존 하드코딩된 기본 주소 (Firebase 통신 실패 시 대비용)
+        window.installUrl = "https://drive.google.com/file/d/1mmDx-DY03V1nfIbazhsZ37mLuu04c-zW/view?usp=sharing";
+
+        // Remote Config 값 가져오기
+        fetchAndActivate(remoteConfig)
+            .then(() => {
+                const updateId = getString(remoteConfig, "update_id");
+                if (updateId) {
+                    // Firebase에서 가져온 update_id로 설치 링크 갱신
+                    window.installUrl = "https://drive.google.com/file/d/" + updateId + "/view?usp=sharing";
+                    console.log("최신 업데이트 링크 적용 완료: ", window.installUrl);
+                }
+            })
+            .catch((err) => {
+                console.error("Firebase 원격 구성을 불러오는데 실패했습니다.", err);
+            });
+    </script>
+
     <script>
         let intentUrl = "";
-        const installUrl = "https://drive.google.com/file/d/1mmDx-DY03V1nfIbazhsZ37mLuu04c-zW/view?usp=sharing";
 
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const sheetId = urlParams.get('id');
 
             if (sheetId) {
-                // 인텐트 주소만 미리 만들어 둡니다 (자동 실행 X)
+                // 인텐트 주소 설정
                 intentUrl = "intent://sheet/d/" + sheetId + "#Intent;scheme=mahjong;package=ggack.mahjongsheet;end;";
             }  else {
                 document.getElementById("btn-open").style.display = "none";
@@ -83,7 +123,8 @@
         }
 
         function installApp() {
-            window.location.href = installUrl;
+            // 위 모듈 스크립트에서 갱신한 window.installUrl 사용
+            window.location.href = window.installUrl;
         }
     </script>
 </head>
