@@ -137,13 +137,33 @@
         function openWebVersion() {
             const urlParams = new URLSearchParams(window.location.search);
             const sheetId = urlParams.get('id');
-            
-            if (sheetId) {
-                window.location.href = "https://mahjongs-e07d3.web.app/?id=" + sheetId;
-            } else {
-                alert("시트 ID 정보가 없습니다. 정상적인 경로로 접속해 주세요.");
+            const targetUrl = "https://mahjongs-e07d3.web.app/?id=" + sheetId;
+        
+            if (!sheetId) {
+                alert("시트 ID 정보가 없습니다.");
+                return;
             }
+        
+            const userAgent = navigator.userAgent.toLowerCase();
+            
+            // 1. 카카오톡 인앱 브라우저 강제 탈출 (카카오 전용 커스텀 스킴)
+            if (userAgent.includes('kakaotalk')) {
+                location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(targetUrl);
+                return;
+            }
+        
+            // 2. 안드로이드 범용 외부 브라우저 호출 (Chrome 강제 지정)
+            if (userAgent.includes('android')) {
+                const intentUrl = 'intent://' + targetUrl.replace(/https?:\/\//i, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+                location.href = intentUrl;
+                return;
+            }
+        
+            // 3. 아이폰(iOS)이나 기타 환경
+            // iOS는 보안상 강제 호출이 거의 불가능하므로 기존대로 이동하거나 안내를 띄워야 합니다.
+            window.location.href = targetUrl;
         }
+        
     </script>
 </head>
 <body>
