@@ -44,11 +44,6 @@
         .btn-web { background-color: #28a745; color: white; margin-top: 8px; }
 
         .footer-note { margin-top: 25px; font-size: 12px; color: #adb5bd; }
-        
-        /* 🌟 언어 선택기 스타일 (선택 사항) */
-        .lang-selector { margin-bottom: 20px; font-size: 12px; color: #ccc; }
-        .lang-selector span { cursor: pointer; margin: 0 5px; }
-        .lang-selector span.active { color: #007bff; font-weight: bold; }
     </style>
 
     <script type="module">
@@ -56,20 +51,18 @@
         import { getRemoteConfig, fetchAndActivate, getString } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-remote-config.js";
 
         const firebaseConfig = {
-          apiKey: "AIzaSyBzuI8NJ03uRTy5OOF7QycZXcnqSAcUwwA",
-          authDomain: "mahjongs-e07d3.firebaseapp.com",
-          projectId: "mahjongs-e07d3",
-          storageBucket: "mahjongs-e07d3.firebasestorage.app",
-          messagingSenderId: "727926338004",
-          appId: "1:727926338004:web:d140565ae1e58ea2eea641",
-          measurementId: "G-Z2WZBEJS87"
+            apiKey: "AIzaSyBzuI8NJ03uRTy5OOF7QycZXcnqSAcUwwA",
+            authDomain: "mahjongs-e07d3.firebaseapp.com",
+            projectId: "mahjongs-e07d3",
+            storageBucket: "mahjongs-e07d3.firebasestorage.app",
+            messagingSenderId: "727926338004",
+            appId: "1:727926338004:web:d140565ae1e58ea2eea641",
+            measurementId: "G-Z2WZBEJS87"
         };
 
         const app = initializeApp(firebaseConfig);
         const remoteConfig = getRemoteConfig(app);
         remoteConfig.settings.minimumFetchIntervalMillis = 0;
-
-        window.installUrl = "https://play.google.com/store/apps/details?id=ggack.mahjongsheet";
 
         fetchAndActivate(remoteConfig)
             .then(() => {
@@ -81,7 +74,10 @@
             .catch((err) => { console.error("Firebase load failed", err); });
     </script>
 
-        // 🌟 다국어 데이터 설정 (footer 번역 갱신 및 sub2 제거)
+    <script>
+        window.installUrl = "https://play.google.com/store/apps/details?id=ggack.mahjongsheet";
+        let intentUrl = "";
+
         const i18n = {
             ko: {
                 title: "마작 기록장",
@@ -105,7 +101,7 @@
                 btnOpen: "アプリで開く",
                 btnInstall: "アプリをインストール",
                 btnWeb: "ウェブ版で入力 (インストール不要)",
-                footer: "アプリ内ブラウザ（LINE等）で開けない場合は、<br>リンクをコピーして外部ブラウザ（Chrome、Safari）でお試しください。"
+                footer: "アプリ内ブラウザ（LINE等）で開けない場合は、<br>링크를 복사해서 외부 브라우저(Chrome, Safari)에서 실행해 주세요."
             },
             zh: {
                 title: "麻将记录本",
@@ -117,17 +113,22 @@
             }
         };
 
-        let intentUrl = "";
+        function applyLanguage(lang) {
+            const data = i18n[lang] || i18n['en'];
+            document.getElementById("message").innerHTML = data.title;
+            document.getElementById("sub-message").innerHTML = data.sub1;
+            document.getElementById("btn-open").innerHTML = data.btnOpen;
+            document.getElementById("btn-install-text").innerHTML = data.btnInstall;
+            document.getElementById("btn-web").innerHTML = data.btnWeb;
+            document.getElementById("footer-text").innerHTML = data.footer;
+            document.documentElement.lang = lang;
+        }
 
         window.onload = function() {
-            // 🌟 언어 설정 로직
             const urlParams = new URLSearchParams(window.location.search);
             const sheetId = urlParams.get('id');
             
-            // 시스템 언어 감지 (ko, en, ja, zh)
             let lang = navigator.language.split('-')[0];
-            if (!i18n[lang]) lang = 'en'; // 지원 안하면 영어로
-            
             applyLanguage(lang);
 
             if (sheetId) {
@@ -139,25 +140,14 @@
             }
         };
 
-        function applyLanguage(lang) {
-            const data = i18n[lang];
-            document.getElementById("message").innerHTML = data.title;
-            document.getElementById("sub-message").innerHTML = data.sub1;
-            document.getElementById("btn-open").innerHTML = data.btnOpen;
-            document.getElementById("btn-install-text").innerHTML = data.btnInstall;
-            document.getElementById("btn-web").innerHTML = data.btnWeb;
-            // 🌟 sub2 관련 코드 제거됨
-            document.getElementById("footer-text").innerHTML = data.footer;
-            document.documentElement.lang = lang;
-        }
-
         function openApp() { if (intentUrl) window.location.href = intentUrl; }
         function installApp() { window.location.href = window.installUrl; }
         function openWebVersion() {
             const urlParams = new URLSearchParams(window.location.search);
             const sheetId = urlParams.get('id');
-            const targetUrl = "https://mahjongs-e07d3.web.app/?id=" + sheetId;
+            const targetUrl = "https://mahjongs-e07d3.web.app/?id=" + (sheetId || "");
             const userAgent = navigator.userAgent.toLowerCase();
+            
             if (userAgent.includes('kakaotalk')) {
                 location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(targetUrl);
                 return;
